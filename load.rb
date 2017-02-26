@@ -16,11 +16,17 @@ end
 
 puts "Found #{worlds.count} planets."
 
+
+Neography.configure do |c|
+  c.username = 'neo4j'
+  c.password = 'password'
+end
+
 @neo = Neography::Rest.new
 worlds_hash = Hash.new
 
 # Delete all nodes and relationships first
-@neo.execute_query("START n=node(*) MATCH n-[r?]-() DELETE n, r;")
+@neo.execute_query("START n=node(*) OPTIONAL MATCH (n)-[r]-() DELETE n, r;")
 
 # First create all the nodes
 worlds.each do |w|
@@ -41,4 +47,3 @@ worlds.each do |w|
     @neo.create_relationship("accessible", current_world, link_to_world)
   end
 end
-
